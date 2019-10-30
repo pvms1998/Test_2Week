@@ -9,7 +9,7 @@
 
 </head>
 
-<div>
+<body>
     <div class="header" style="margin-top: 50px; margin-left: 330px;">
         <form id="myForm" action="/">
             Kích thước bàn: <input type="text" id="SizeTable" name="SizeTable" value="5">
@@ -42,8 +42,6 @@
             container.style.width = sizeTable * 100 + "px";
             var count = 1;
             for (var i = 1; i <= sizeTable; i++) {
-
-
                 for (var j = 1; j <= sizeTable; j++) {
                     var row = document.createElement("div");
                     row.classList.add('box');
@@ -412,9 +410,6 @@
 
         }
 
-
-
-
         function replay() {
             X_or_O = 0;
             for (var i = 0; i < boxes.length; i++) {
@@ -429,6 +424,6 @@
         }
     </script>
 
-</div>
+</body>
 
 </html>
