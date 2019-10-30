@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GRID</title>
+    <link rel=stylesheet id="style" type="text/css" href="grid.css" />
+</head>
+<body>
+    <div class="header" style="margin-top: 50px; margin-left: 330px;">
+        <form id="myForm" action="/">
+            Số dòng: <input type="text" id="row" name="row" >
+            Số cột: <input type="text" id="column" name="column">
+            <input type="button" onclick="createTable()" value=" Tạo bảng">
+        </form>
+    </div>
+      <div id="container">
+      </div>
+<script>
+    function createTable() {
+    var row = document.getElementById("row");
+    var column = document.getElementById("column");
+
+    if (row.value.length == 0 || column.value.length == 0) {
+    alert("Vui lòng nhập vào số dòng và số cột");
+        return false;
+    } else if (isNaN(row.value) || isNaN(column.value)) {
+        alert("Vui lòng nhập giá trị số cho số dòng và số cột");
+        return false;
+    } else {
+        var container = document.getElementById("container");
+        container.style.width = column * 100 + "px";
+
+        var countRow = parseInt(row.value);
+        var countColumn = parseInt(column.value);
+
+        var tagTable = document.createElement("table");
+        tagTable.border = 1;
+
+        for (var i = 0; i < countRow; i++) {
+        var tagRow = document.createElement("tr");
+        tagTable.appendChild(tagRow);
+            
+        for(var j = 0; j < countColumn; j++) {
+        var tagColumn = document.createElement("td");
+        var randomnumber = Math.floor((Math.random() * 1000) + 1); 
+                if(i == 0)
+                {
+                    var textNode = document.createTextNode(j + 1);
+                    tagColumn.appendChild(textNode);
+                    tagRow.appendChild(tagColumn);
+                }
+                if(i > 0)
+                {
+                    var textNode = document.createTextNode(randomnumber);
+                    tagColumn.appendChild(textNode);
+                    tagRow.appendChild(tagColumn);
+                }
+        }
+        }
+
+        container.appendChild(tagTable);
+
+        return true;
+    }
+}
+</script>
+</body>
+</html>

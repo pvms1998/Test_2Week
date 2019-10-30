@@ -215,11 +215,11 @@ window.addEventListener('keyup', (e) => {
         {
             cancelAnimationFrame(loop1);
         }
-        if(e.key == "b")
+        if(e.key == "b" || e.key == "B")
         {
             mode = "b";
         }
-        if(e.key == "a")
+        if(e.key == "a" || e.key == "A")
         {
             mode = "a";
         }
