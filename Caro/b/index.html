@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta>
+
+<head>
+    <meta charset="UTF-8">
+    <title>GAME CARO NxN</title>
+    <link rel=stylesheet id="style" type="text/css" href="Carob.css" />
+
+</head>
+
+<div>
+    <div class="header" style="margin-top: 50px; margin-left: 330px;">
+        <form id="myForm" action="/">
+            Kích thước bàn: <input type="text" id="SizeTable" name="SizeTable" value="5">
+            Kích thước win: <input type="text" id="SizeWin" name="SizeWin" value="3">
+            <input type="button" onclick="createTable()" value=" BẮT ĐẦU TRÒ CHƠI">
+        </form>
+
+    </div>
+
+    <div class="container" id="main">
+        <span id="turn">Player 1 (X)</span>
+    </div>
+    <!-- Play Again And Reset All Info -->
+    <button id="btn_reset" name="btn_reset" onclick="replay()">RESET</button>
+
+    <script>
+        var turn = document.getElementById("turn"),
+            // boxes => all boxes
+            // X_or_O => to set X or O into the box
+            boxes = document.querySelectorAll("#main div"),
+            X_or_O = 0;
+
+
+        function createTable() {
+
+            var sizeTable = document.getElementById("SizeTable").value;
+            var sizeWin = document.getElementById("SizeWin").value;
+
+            var container = document.getElementById("main");
+            container.style.width = sizeTable * 100 + "px";
+            var count = 1;
+            for (var i = 1; i <= sizeTable; i++) {
+
+
+                for (var j = 1; j <= sizeTable; j++) {
+                    var row = document.createElement("div");
+                    row.classList.add('box');
+                    row.setAttribute("id", i + "-" + j);
+                    count++;
+                    container.appendChild(row);
+                }
+            }
+            boxes = document.querySelectorAll("#main div")
+
+            for (var i = 0; i < boxes.length; i++) {
+                boxes[i].onclick = function () {
+                    // not allow to change the value of the box
+                    if (this.innerHTML !== "X" && this.innerHTML !== "O") {
+                        if (X_or_O % 2 === 0) {
+                            console.log(X_or_O);
+                            this.innerHTML = "X";
+                            turn.innerHTML = "Player 1 (X) ";
+                            CheckWinner(this.id, sizeWin, sizeTable);
+                            X_or_O += 1;
+
+                        } else {
+                            console.log(X_or_O);
+                            this.innerHTML = "O";
+                            turn.innerHTML = "Player 2 (0) ";
+                            CheckWinner(this.id, sizeWin, sizeTable);
+                            X_or_O += 1;
+                        }
+                    }
+
+                };
+            }
+        }
+
+
+        function preventClickTable() {
+            for (var i = 0; i < boxes.length; i++) {
+                boxes[i].style.pointerEvents = "none";
+            }
+        }
+
+        function AllowClickTable() {
+            for (var i = 0; i < boxes.length; i++) {
+                boxes[i].style.pointerEvents = "auto";
+            }
+        }
+
+        function selectWinner() {
+            turn.innerHTML = turn.innerHTML + " Chiến thắng";
+            document.getElementById("btn_reset").style.visibility = "visible";
+            turn.style.fontSize = "25px";
+            turn.style.color = "red";
+            preventClickTable();
+        }
+
+        function KiemTraDuongNgangX(CurBoxId, sizeWin, sizeTable) {
+
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0];
+            var j = box[1];
+
+            var m = 0;
+            var n = 0;
+            var y = j;
+
+            while (j >= 1 && document.getElementById(i + "-" + j).innerHTML ===
+                "X") // cot giam
+            {
+                m++;
+                j--;
+            }
+
+            while (y <= sizeTable && document.getElementById(i + "-" + y).innerHTML ===
+                "X") // cot tang
+            {
+                n++;
+                y++;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function KiemTraDuongNgangO(CurBoxId, sizeWin, sizeTable) {
+
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0];
+            var j = box[1];
+
+            var m = 0;
+            var n = 0;
+            var y = j;
+
+            while (j >= 1 && document.getElementById(i + "-" + j).innerHTML ===
+                "O") // cot giam
+            {
+                m++;
+                j--;
+            }
+
+            while (y <= sizeTable && document.getElementById(i + "-" + y).innerHTML ===
+                "O") // cot tang
+            {
+                n++;
+                y++;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function KiemTraDuongDocX(CurBoxId, sizeWin, sizeTable) {
+
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0]; // dong
+            var j = box[1]; // cot
+
+            var m = 0;
+            var n = 0;
+            var x = i;
+
+            while (i >= 1 && document.getElementById(i + "-" + j).innerHTML ===
+                "X") // 
+            {
+                m++;
+                i--;
+            }
+
+            while (x <= sizeTable && document.getElementById(x + "-" + j).innerHTML ===
+                "X") // nhap tu phai qua thi x(cot) se giam
+            {
+                n++;
+                x++;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function KiemTraDuongDocO(CurBoxId, sizeWin, sizeTable) {
+
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0]; // dong
+            var j = box[1]; // cot
+
+            var m = 0;
+            var n = 0;
+            var x = i;
+
+            while (i >= 1 && document.getElementById(i + "-" + j).innerHTML ===
+                "O") // nhap tu trai qua thi a(cot) se tang
+            {
+                m++;
+                i--;
+            }
+
+            while (x <= sizeTable && document.getElementById(x + "-" + j).innerHTML ===
+                "O") // nhap tu phai qua thi x(cot) se giam
+            {
+                n++;
+                x++;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function KiemTraDuongCheoTraiX(CurBoxId, sizeWin, sizeTable) {
+
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0];
+            var j = box[1];
+
+            var m = 0;
+            var n = 0;
+            var x = i;
+            var y = j;
+
+            while (j <= sizeTable && i >= 1 && document.getElementById(i + "-" + j).innerHTML ===
+                "X") // tren xuong
+            {
+                m++;
+                i--;
+                j++;
+            }
+
+            while (y >= 1 && x <= sizeTable && document.getElementById(x + "-" + y).innerHTML ===
+                "X") // duoi len
+            {
+                n++;
+                x++;
+                y--;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function KiemTraDuongCheoTraiO(CurBoxId, sizeWin, sizeTable) {
+
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0];
+            var j = box[1];
+
+            var m = 0;
+            var n = 0;
+            var x = i;
+            var y = j;
+
+            while (j <= sizeTable && i >= 1 && document.getElementById(i + "-" + j).innerHTML ===
+                "O") // tren xuong
+            {
+                m++;
+                i--;
+                j++;
+            }
+
+            while (y >= 1 && x <= sizeTable && document.getElementById(x + "-" + y).innerHTML ===
+                "O") // duoi len
+            {
+                n++;
+                x++;
+                y--;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function KiemTraDuongCheoPhaiX(CurBoxId, sizeWin, sizeTable) {
+            // cot j tang, dong i giam
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0];
+            var j = box[1];
+
+            var m = 0;
+            var n = 0;
+            var x = i;
+            var y = j;
+
+            while (j <= sizeTable && i <= sizeTable && document.getElementById(i + "-" + j).innerHTML ===
+                "X") // tren xuong
+            {
+                m++;
+                i++;
+                j++;
+            }
+
+            while (y >= 1 && x >= 1 && document.getElementById(x + "-" + y).innerHTML ===
+                "X") // duoi len
+            {
+                n++;
+                x--;
+                y--;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function KiemTraDuongCheoPhaiO(CurBoxId, sizeWin, sizeTable) {
+            // cot j tang, dong i giam
+            var boxCur = document.getElementById("CurBoxId");
+            // 1-1,5-5
+            var box = CurBoxId.split("-");
+            var i = box[0];
+            var j = box[1];
+
+            var m = 0;
+            var n = 0;
+            var x = i;
+            var y = j;
+
+            while (j <= sizeTable && i <= sizeTable && document.getElementById(i + "-" + j).innerHTML ===
+                "O") // tren xuong
+            {
+                m++;
+                i++;
+                j++;
+            }
+
+            while (y >= 1 && x >= 1 && document.getElementById(x + "-" + y).innerHTML ===
+                "O") // duoi len
+            {
+                n++;
+                x--;
+                y--;
+            }
+
+            if (m == sizeWin || n == sizeWin)
+                return true; // thắng
+            return false; // chưa thắng
+        }
+
+        function CheckWinner(CurBoxId, sizeWin, sizeTable) {
+
+
+            // check ngang
+            if (KiemTraDuongNgangX(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+            if (KiemTraDuongNgangO(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+            if (KiemTraDuongDocX(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+            if (KiemTraDuongDocO(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+            if (KiemTraDuongCheoTraiX(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+            if (KiemTraDuongCheoTraiO(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+            if (KiemTraDuongCheoPhaiX(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+            if (KiemTraDuongCheoPhaiO(CurBoxId, sizeWin, sizeTable) == true) {
+                selectWinner();
+            }
+
+             else {
+                // check hoà
+                var flag = true;
+
+                for (var i = 0; i < boxes.length; i++) {
+
+                    if (boxes[i].innerHTML === "") {
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if (flag == true) {
+                    turn.innerHTML = "Hoà";
+                    document.getElementById("btn_reset").style.visibility = "visible";
+                    turn.style.fontSize = "25px";
+                    preventClickTable();
+                    turn.style.color = "yellow";
+                }
+            }
+
+
+        }
+
+
+
+
+        function replay() {
+            X_or_O = 0;
+            for (var i = 0; i < boxes.length; i++) {
+                boxes[i].innerHTML = "";
+                turn.innerHTML = "Player 1 (X)";
+                turn.style.fontSize = "25px";
+                document.getElementById("btn_reset").style.visibility = "hidden";
+                AllowClickTable();
+                turn.style.color = "white";
+            }
+
+        }
+    </script>
+
+</div>
+
+</html>
